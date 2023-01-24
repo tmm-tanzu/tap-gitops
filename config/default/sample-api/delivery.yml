@@ -1,22 +1,21 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: tanzu-java-web-app
+  name: sample-api
   annotations:
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
     ootb.apps.tanzu.vmware.com/apidescriptor-ref: "true"
   labels:
-    app.kubernetes.io/part-of: tanzu-java-web-app
-    apps.tanzu.vmware.com/has-tests: "true"
+    app.kubernetes.io/part-of: sample-api
     apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/component: run
-    carto.run/workload-name: tanzu-java-web-app
+    carto.run/workload-name: sample-api
 spec:
   template:
     metadata:
       annotations:
         autoscaling.knative.dev/minScale: "1"
-        boot.spring.io/version: 2.7.3
+        boot.spring.io/version: 2.6.7
         conventions.carto.run/applied-conventions: |-
           spring-boot-convention/auto-configure-actuators-check
           spring-boot-convention/spring-boot
@@ -27,27 +26,29 @@ spec:
           spring-boot-convention/app-live-view-appflavour-check
           spring-boot-convention/app-live-view-connector-boot
           spring-boot-convention/app-live-view-appflavours-boot
+          spring-boot-convention/service-intent-postgres
           appliveview-sample/app-live-view-appflavour-check
         developer.conventions/target-containers: workload
+        services.conventions.carto.run/postgres: postgresql/42.3.4
       labels:
         app.kubernetes.io/component: run
-        app.kubernetes.io/part-of: tanzu-java-web-app
+        app.kubernetes.io/part-of: sample-api
         apps.tanzu.vmware.com/auto-configure-actuators: "false"
-        apps.tanzu.vmware.com/has-tests: "true"
         apps.tanzu.vmware.com/workload-type: web
-        carto.run/workload-name: tanzu-java-web-app
+        carto.run/workload-name: sample-api
         conventions.carto.run/framework: spring-boot
+        services.conventions.carto.run/postgres: workload
         tanzu.app.live.view: "true"
         tanzu.app.live.view.application.actuator.path: actuator
         tanzu.app.live.view.application.actuator.port: "8080"
         tanzu.app.live.view.application.flavours: spring-boot
-        tanzu.app.live.view.application.name: tanzu-java-web-app
+        tanzu.app.live.view.application.name: sample-api
     spec:
       containers:
       - env:
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: harbor.ryanbaker.io/tap-apps/tanzu-java-web-app-default@sha256:b68ac3c9aec446e26601d99aaf8dc4b10ec1ce7c95894e9e0d794a749e4d7d50
+        image: harbor.ryanbaker.io/tap-apps/sample-api-default@sha256:c6e32b473d3ec9b0cfa58cf1b8e8b5992408846ee06d6ef2ad124f5c80754e8a
         livenessProbe:
           httpGet:
             path: /livez
