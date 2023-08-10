@@ -5,6 +5,7 @@ metadata:
   annotations:
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
     ootb.apps.tanzu.vmware.com/apidescriptor-ref: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
   labels:
     app.kubernetes.io/part-of: tanzu-java-web-app
     apps.tanzu.vmware.com/has-tests: "true"
@@ -18,6 +19,7 @@ spec:
         autoscaling.knative.dev/minScale: "1"
         boot.spring.io/version: 2.7.3
         conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
           spring-boot-convention/auto-configure-actuators-check
           spring-boot-convention/spring-boot
           spring-boot-convention/spring-boot-graceful-shutdown
@@ -27,7 +29,6 @@ spec:
           spring-boot-convention/app-live-view-appflavour-check
           spring-boot-convention/app-live-view-connector-boot
           spring-boot-convention/app-live-view-appflavours-boot
-          appliveview-sample/app-live-view-appflavour-check
         developer.conventions/target-containers: workload
       labels:
         app.kubernetes.io/component: run
@@ -47,7 +48,7 @@ spec:
       - env:
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: harbor.ryanbaker.io/tap-apps/tanzu-java-web-app-default@sha256:47aba906a4f7cf1af7108cf4e9385a298bc71ea8ad87fc96f0de1dfa547c98cc
+        image: harbor.ryanbaker.io/tap-apps/tanzu-java-web-app-default@sha256:c8654e3d44d88a6c962d0be1dc6080670fff1e5dae93bd5eb8f271f334f6e334
         livenessProbe:
           httpGet:
             path: /livez
